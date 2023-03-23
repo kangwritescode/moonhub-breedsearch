@@ -1,33 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import QueryMaker from './components/QueryMaker/QueryMaker'
+import csvtojson from 'csvtojson';
+import { DogBreed } from './types';
+import DogsView from './components/DogsView/DogsView';
+import QueryTree from './components/QueryTree/QueryTree';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [dogData, setDogData] = useState<Array<DogBreed>>([])
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch('/src/dogdata.csv');
+      const csvData = await response.text();
+      const jsonData = await csvtojson().fromString(csvData);
+      setDogData(jsonData);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className='layout__top'>
+          <QueryMaker />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div className='layout__bottom'>
+        <div className='layout__left'>
+          <QueryTree />
+        </div>
+        <div className='layout__right'>
+          <DogsView data={dogData} />
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   )
 }
