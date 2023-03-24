@@ -4,6 +4,7 @@ import styles from './DogTag.module.css';
 import { v4 as uuid } from 'uuid';
 import classNames from 'classnames';
 import { useDoggyStore } from '../../store/doggyStore';
+import { Button } from '@mantine/core';
 
 interface DogTagProps {
     className?: string;
@@ -28,11 +29,11 @@ function DogTag(props: DogTagProps) {
     const spanStyles = [styles.dogProp, tagStyles, spanBGColor].join(' ');
     const extraEyesDescription = propName === 'Color of Eyes' ? ' (eyes)' : '';
     return (
-        <span key={uuid()} className={classNames(className, spanStyles, {
+        <Button radius='xl' key={uuid()} className={classNames(className, spanStyles, {
             [styles.selected]: selected
         })} onClick={onClickHandler}>
             {value.toLowerCase() + extraEyesDescription}
-        </span>
+        </Button>
     )
 }
 

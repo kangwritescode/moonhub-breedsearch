@@ -1,13 +1,13 @@
 .dogProp {
+    position: relative;
     display: inline-block;
-    border: 1px solid black;
+    border: 1px solid gray;
     padding: 4px 8px;
     border-radius: 50px;
     white-space: nowrap;
+    color: black;
 }
-.dogProp:hover {
-    cursor: pointer;
-}
+
 .tagStyles {
     margin-right: 10px;
     margin-top: 12px;
@@ -18,18 +18,24 @@
     color: orange;
 }
 
-.skyBlue {
-    background-color: #FFE9A9;
+.skyBlue,
+.skyBlue:hover {
+    background-color: #FFE9A9 !important;
 }
-.verdigris {
-    background-color: #97e9ca;
+
+.verdigris,
+.verdigris:hover {
+    background-color: #97e9ca !important;
 }
-.cambridgeBlue {
-    background-color: #b6abe4;
+
+.cambridgeBlue, .cambridgeBlue:hover {
+    background-color: #b6abe4 !important;
 }
-.vanilla {
-    background-color: #FFB4B4;
+
+.vanilla, .vanilla:hover {
+    background-color: #FFB4B4 !important;
 }
-.mistyRose {
-    background-color: #ebfcfb;
+
+.mistyRose, .mistyRose:hover {
+    background-color: #ebfcfb !important;
 }

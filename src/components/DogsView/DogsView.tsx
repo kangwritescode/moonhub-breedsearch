@@ -28,7 +28,6 @@ function DogsView({ data }: DogsViewProps) {
             tbody.push(<tr key={uuid()}>{tr}</tr>);
         });
     }
-    return undefined
     return (
         <div className={styles.tableContainer}>
             <table className={styles.table}>

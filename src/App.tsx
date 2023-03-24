@@ -9,6 +9,7 @@ import './App.css'
 import { DogPropTags } from './types';
 import { v4 as uuid } from "uuid";
 import { DoggyStore, useDoggyStore } from './store/doggyStore';
+import { Flex } from '@mantine/core';
 
 function App() {
     const {
@@ -16,7 +17,7 @@ function App() {
         queryTree,
         dogPropTags,
         setDogData,
-        setDogPropTags 
+        setDogPropTags
     }: DoggyStore = useDoggyStore()
 
     // Fetch and set dogData from csv file
@@ -57,19 +58,22 @@ function App() {
 
     return (
         <div className="App">
-            <div className='layout__top'>
+            <Flex
+                mih={"100vh"}
+                gap={{ base: 'sm', sm: 'lg' }}
+                justify="center"
+                align="center"
+                direction="column"
+                wrap="wrap"
+            >
+                <QueryTree treeData={queryTree} />
                 <QueryMaker dogTags={dogPropTags} />
-            </div>
-            <div className='layout__bottom'>
-                <div className='layout__left'>
-                    <QueryTree treeData={queryTree} />
-                </div>
-                <div className='layout__right'>
-                    <DogsView data={dogData} />
-                </div>
-            </div>
+            </Flex>
+
         </div>
     )
 }
 
 export default App
+
+{/* <DogsView data={dogData} /> */ }

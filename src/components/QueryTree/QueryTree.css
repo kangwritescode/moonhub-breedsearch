@@ -1,6 +1,6 @@
 .queryTree {
     position: relative;
-    border: 2px solid gray;
+    border: 2px solid rgb(154, 154, 154);
     border-radius: 18px;
     display: inline-block;
     text-align: center;
@@ -11,32 +11,7 @@
     margin-right: 20px;
 }
 
-.queryTreeDogProps {
-    display: flex;
-    flex-direction: column;
-}
-.queryTreeDogProps--addedMargin {
-    margin-right: 20px;
-}
-
-.queryTreeHeader {
-    border-bottom: 1px solid lightgray;
-}
-
-.queryTreeHeader--selected {
-    border-bottom-color: orange;
-}
-
-.queryTreeBody {
-    padding: 20px;
-    display: flex;
-    flex-direction: row;
-}
-
-.queryTreeDogTag {
-    margin-bottom: 8px;
-}
-
+/* Cover the tree on select */
 .queryTree--selected:before {
     content: "";
     position: absolute;
@@ -49,7 +24,6 @@
     z-index: 1;
     pointer-events: none;
 }
-
 .queryTree--selected:after {
     content: "";
     position: absolute;
@@ -62,9 +36,26 @@
     border-radius: 18px;
     z-index: 1;
     pointer-events: none;
-    /* other styles for the covering div */
 }
 
 .queryTree--selected {
     border: 2px solid orange;
+}
+
+.queryTreeDogProps {
+    display: flex;
+    flex-direction: column;
+}
+.queryTreeDogProps--addedMargin {
+    margin-right: 20px;
+}
+
+.queryTreeBody {
+    padding: 6px;
+    display: flex;
+    flex-direction: row;
+}
+
+.queryTreeDogTag {
+    margin-bottom: 8px;
 }

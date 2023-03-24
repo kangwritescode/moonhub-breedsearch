@@ -5,6 +5,7 @@ import './QueryTree.css';
 import { v4 as uuid } from 'uuid';
 import { useDoggyStore } from '../../store/doggyStore';
 import classNames from 'classnames';
+import { Card, Divider } from '@mantine/core';
 
 interface QueryTreeProps {
     treeData: QueryTreeState
@@ -21,10 +22,10 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
         }
     }
     return (
-        <div className={classNames(className, 'queryTree', {
+        <Card className={classNames(className, 'queryTree', {
             'queryTree--selected': selected
         })} onClick={onClickDogNode}>
-            <div className='queryTreeHeader'>{operator}</div>
+            <Divider my="xs" label={operator} labelPosition="center" />
             <div className='queryTreeBody'>
                 <div className={classNames('queryTreeDogProps', {
                     'queryTreeDogProps--addedMargin': queryNodes?.length
@@ -39,7 +40,7 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
                     })} key={uuid()} treeData={childTree} />
                 })}
             </div>
-        </div>
+        </Card>
     )
 }
 

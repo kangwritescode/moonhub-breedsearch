@@ -22,17 +22,18 @@ export type Get = () => DoggyStore;
 const initialDoggyState: QueryTreeState = {
     id: uuid(),
     selected: false,
-    operator: 'AND',
+    operator: 'OR',
     dogProps: [{
         id: uuid(),
         selected: false,
-        property: 'Country of Origin',
-        value: 'China'
-    }, {
+        property: 'Character Traits',
+        value: 'Friendly'
+    },
+    {
         id: uuid(),
         selected: false,
-        property: 'Country of Origin',
-        value: 'United States'
+        property: 'Character Traits',
+        value: 'Friendly'
     }],
     queryNodes: [{
         id: uuid(),
@@ -41,8 +42,13 @@ const initialDoggyState: QueryTreeState = {
         dogProps: [{
             id: uuid(),
             selected: false,
+            property: 'Color of Eyes',
+            value: 'Brown'
+        }, {
+            id: uuid(),
+            selected: false,
             property: 'Country of Origin',
-            value: 'England'
+            value: 'China'
         }],
         queryNodes: []
     }]
@@ -108,7 +114,7 @@ const selectDogPropOrNode = (id: string, set: Set, get: Get) => {
     const { queryTree } = get();
     const newQueryTree = clone(queryTree);
     unselectAll(newQueryTree);
-    
+
     const node = findDogPropOrNode(newQueryTree, id);
     if (node) {
         node.selected = true;
