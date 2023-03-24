@@ -1,0 +1,23 @@
+.queryTree {
+    border: 1px solid lightgray;
+    border-radius: 18px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+}
+.queryTreeDogProps {
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.queryTreeHeader {
+    border-bottom: 1px solid lightgray;
+}
+.queryTreeBody {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+}
+.queryTreeDogTag {
+    margin-bottom: 8px;
+}

@@ -1,19 +1,21 @@
 import React, { ReactNode } from 'react'
+import { v4 as uuid } from 'uuid';
 import { DogBreed } from '../../types'
+import styles from './DogsView.module.css'
 
 interface DogsViewProps {
     data: Array<DogBreed>;
 }
 
 function DogsView({ data }: DogsViewProps) {
-    console.log(data)
+
     const thead: Array<ReactNode> = [];
     const tbody: Array<ReactNode> = [];
 
     // Create the table header
     if (data && data.length) {
         Object.keys(data[0]).forEach((key, index) => {
-            thead.push(<th key={index}>{key}</th>);
+            thead.push(<th key={uuid()}>{key}</th>);
         });
     }
     // Create the table body
@@ -21,21 +23,23 @@ function DogsView({ data }: DogsViewProps) {
         data.forEach((row, index) => {
             const tr: Array<ReactNode> = [];
             Object.values(row).forEach((value) => {
-                tr.push(<td key={index}>{value}</td>);
+                tr.push(<td key={uuid()}>{value}</td>);
             });
-            tbody.push(<tr key={index}>{tr}</tr>);
+            tbody.push(<tr key={uuid()}>{tr}</tr>);
         });
     }
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    {thead}
-                </tr>
-            </thead>
-            <tbody>{tbody}</tbody>
-        </table>
+        <div className={styles.tableContainer}>
+            <table className={styles.table}>
+                <thead>
+                    <tr>
+                        {thead}
+                    </tr>
+                </thead>
+                <tbody>{tbody}</tbody>
+            </table>
+        </div>
     );
 }
 

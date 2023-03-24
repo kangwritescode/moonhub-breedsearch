@@ -1,0 +1,31 @@
+.dogProp {
+    display: inline-block;
+    border: 1px solid black;
+    padding: 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+.dogProp:hover {
+    cursor: pointer;
+}
+
+.selected {
+    border-color: orange;
+    color: orange;
+}
+
+.skyBlue {
+    background-color: #FFE9A9;
+}
+.verdigris {
+    background-color: #97e9ca;
+}
+.cambridgeBlue {
+    background-color: #b6abe4;
+}
+.vanilla {
+    background-color: #FFB4B4;
+}
+.mistyRose {
+    background-color: #ebfcfb;
+}
