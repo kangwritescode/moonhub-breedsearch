@@ -1,22 +1,33 @@
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
+
 body {
-  margin: unset;
+    margin: unset;
 }
+
 .layout__top {
-  border-bottom: 1px solid lightgray;
-  padding: 80px 120px;
+    border-bottom: 1px solid lightgray;
+    padding: 80px 120px;
+    overflow: hidden;
 }
 
 .layout__bottom {
     display: flex;
+    border: 1px solid lightgray;
+    height: 100%;
 }
+
 .layout__right {
     border-left: 1px solid lightgray;
     padding: 40px;
 }
+
 .layout__left {
     width: 100%;
     padding: 80px 120px;
+}
+.App {
+    height: 100vh;
+    width: 100vw;
 }

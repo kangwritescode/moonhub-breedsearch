@@ -1,12 +1,16 @@
 .dogProp {
     display: inline-block;
     border: 1px solid black;
-    padding: 6px;
-    border-radius: 10px;
+    padding: 4px 8px;
+    border-radius: 50px;
     white-space: nowrap;
 }
 .dogProp:hover {
     cursor: pointer;
+}
+.tagStyles {
+    margin-right: 10px;
+    margin-top: 12px;
 }
 
 .selected {

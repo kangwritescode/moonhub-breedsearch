@@ -11,26 +11,27 @@ interface DogTagProps {
     selected?: boolean;
     propName: string;
     value: string;
-
 }
 
 function DogTag(props: DogTagProps) {
     const { className, propName, value, id, selected } = props;
-    const selectNodeOrTree = useDoggyStore(({ selectNodeOrTree }) => selectNodeOrTree);
+    const isTag = !id;
+    const tagStyles = isTag ? styles.tagStyles : '';
+    const selectDogPropOrNode = useDoggyStore(({ selectDogPropOrNode }) => selectDogPropOrNode);
+    const addDogPropToNode = useDoggyStore(({ addDogPropToNode }) => addDogPropToNode);
 
-    const onClickDogNode = () => {
-        if (id) {
-            selectNodeOrTree(id);
-        }
+    const onClickHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        e.stopPropagation();
+        return id ? selectDogPropOrNode(id) : addDogPropToNode(propName, value);
     }
 
     const spanBGColor = styles[colorMap[propName]];
-    const spanStyles = [styles.dogProp, spanBGColor].join(' ');
+    const spanStyles = [styles.dogProp, tagStyles, spanBGColor].join(' ');
     const extraEyesDescription = propName === 'Color of Eyes' ? ' (eyes)' : '';
     return (
         <span key={uuid()} className={classNames(className, spanStyles, {
             [styles.selected]: selected
-        })} onClick={onClickDogNode}>
+        })} onClick={onClickHandler}>
             {value.toLowerCase() + extraEyesDescription}
         </span>
     )

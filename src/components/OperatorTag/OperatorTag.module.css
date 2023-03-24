@@ -1,0 +1,9 @@
+.operatorTag {
+    display: inline-block;
+    border: 1px solid black;
+    margin-right: 10px;
+    padding: 4px 8px;
+    border-radius: 50px;
+    white-space: nowrap;
+    cursor: pointer;
+}

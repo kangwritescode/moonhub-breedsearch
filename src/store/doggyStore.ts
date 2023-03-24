@@ -11,7 +11,8 @@ export interface DoggyStore {
     setQueryTree: (queryTree: QueryTreeState) => void, //(queryTree: QueryTreeState) => set({ queryTree })
     setDogData: (dogData: Array<DogBreed>) => void,
     setDogPropTags: (dogPropTags: DogPropTags) => void,
-    selectNodeOrTree: (id: string) => void,
+    selectDogPropOrNode: (id: string) => void,
+    addDogPropToNode: (property: string, value: string) => void
 }
 
 export type Set = (partial: DoggyStore | Partial<DoggyStore> | ((state: DoggyStore) => DoggyStore | Partial<DoggyStore>), replace?: boolean | undefined) => void
@@ -54,11 +55,12 @@ export const useDoggyStore = create<DoggyStore>((set, get) => ({
     setQueryTree: (queryTree: QueryTreeState) => set({ queryTree }),
     setDogData: (dogData: Array<DogBreed>) => set({ dogData }),
     setDogPropTags: (dogPropTags: DogPropTags) => set({ dogPropTags }),
-    selectNodeOrTree: (id: string) => selectNodeOrTree(id, set, get)
+    selectDogPropOrNode: (id: string) => selectDogPropOrNode(id, set, get),
+    addDogPropToNode: (property: string, value: string) => addDogPropToNode(property, value, set, get)
 }));
 
 // Actions and Helper Functions
-const findNode = (node: QueryTreeState, searchId: string): QueryTreeState | undefined => {
+const findDogPropOrNode = (node: QueryTreeState, searchId: string): QueryTreeState | undefined => {
     const { id, dogProps, queryNodes } = node;
     if (id === searchId) {
         return node;
@@ -77,7 +79,7 @@ const findNode = (node: QueryTreeState, searchId: string): QueryTreeState | unde
     if (queryNodes && queryNodes.length > 0) {
         let node;
         queryNodes.forEach((child) => {
-            node = findNode(child, searchId);
+            node = findDogPropOrNode(child, searchId);
         });
         if (node) {
             return node;
@@ -85,7 +87,7 @@ const findNode = (node: QueryTreeState, searchId: string): QueryTreeState | unde
     }
 }
 
-const unselectAllNodes = (node: QueryTreeState) => {
+const unselectAll = (node: QueryTreeState) => {
     const { dogProps, queryNodes } = node;
     node.selected = false;
     if (dogProps && dogProps.length > 0) {
@@ -95,20 +97,55 @@ const unselectAllNodes = (node: QueryTreeState) => {
     }
     if (queryNodes && queryNodes.length > 0) {
         queryNodes.forEach((child) => {
-            unselectAllNodes(child);
+            unselectAll(child);
         });
     }
 }
 
-const selectNodeOrTree = (id: string, set: Set, get: Get) => {
+const selectDogPropOrNode = (id: string, set: Set, get: Get) => {
     const { queryTree } = get();
     const newQueryTree = clone(queryTree);
-    unselectAllNodes(newQueryTree);
-
-    const node = findNode(newQueryTree, id);
+    unselectAll(newQueryTree);
+    const node = findDogPropOrNode(newQueryTree, id);
     if (node) {
         node.selected = true;
     }
     set({ queryTree: newQueryTree });
+}
+
+const findSelectedNode = (node: QueryTreeState): QueryTreeState | undefined => {
+    const { selected, queryNodes } = node;
+    if (selected) {
+        return node;
+    }
+    if (queryNodes && queryNodes.length > 0) {
+        let node;
+        queryNodes.forEach((child) => {
+            node = findSelectedNode(child);
+        });
+        if (node) {
+            return node;
+        }
+    }
+}
+
+
+const addDogPropToNode = (property: string, value: string, set: Set, get: Get) => {
+    const { queryTree } = get();
+    const newQueryTree = clone(queryTree);
+    const selectedNode = findSelectedNode(newQueryTree);
+    if (selectedNode) {
+        if (selectedNode.dogProps) {
+            selectedNode.dogProps.push({
+                id: uuid(),
+                selected: false,
+                property,
+                value
+            });
+            selectedNode.selected = false;
+        }
+    }
+    set({ queryTree: newQueryTree });
+
 }
 

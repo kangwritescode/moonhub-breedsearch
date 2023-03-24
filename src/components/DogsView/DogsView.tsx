@@ -14,13 +14,13 @@ function DogsView({ data }: DogsViewProps) {
 
     // Create the table header
     if (data && data.length) {
-        Object.keys(data[0]).forEach((key, index) => {
+        Object.keys(data[0]).forEach((key) => {
             thead.push(<th key={uuid()}>{key}</th>);
         });
     }
     // Create the table body
     if (data && data.length) {
-        data.forEach((row, index) => {
+        data.forEach((row) => {
             const tr: Array<ReactNode> = [];
             Object.values(row).forEach((value) => {
                 tr.push(<td key={uuid()}>{value}</td>);
@@ -28,7 +28,7 @@ function DogsView({ data }: DogsViewProps) {
             tbody.push(<tr key={uuid()}>{tr}</tr>);
         });
     }
-
+    return undefined
     return (
         <div className={styles.tableContainer}>
             <table className={styles.table}>
