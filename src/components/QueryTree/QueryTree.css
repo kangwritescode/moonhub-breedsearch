@@ -5,6 +5,10 @@
     display: inline-block;
     text-align: center;
     cursor: pointer;
+    min-width: 100px;
+}
+.queryTree--addedMargin {
+    margin-right: 20px;
 }
 
 .queryTreeDogProps {
@@ -44,7 +48,6 @@
     border-radius: 18px;
     z-index: 1;
     pointer-events: none;
-    /* other styles for the covering div */
 }
 
 .queryTree--selected:after {

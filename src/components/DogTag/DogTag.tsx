@@ -17,8 +17,7 @@ function DogTag(props: DogTagProps) {
     const { className, propName, value, id, selected } = props;
     const isTag = !id;
     const tagStyles = isTag ? styles.tagStyles : '';
-    const selectDogPropOrNode = useDoggyStore(({ selectDogPropOrNode }) => selectDogPropOrNode);
-    const addDogPropToNode = useDoggyStore(({ addDogPropToNode }) => addDogPropToNode);
+    const [selectDogPropOrNode, addDogPropToNode] = useDoggyStore(({ selectDogPropOrNode, addDogPropToNode }) => [selectDogPropOrNode, addDogPropToNode]);
 
     const onClickHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         e.stopPropagation();

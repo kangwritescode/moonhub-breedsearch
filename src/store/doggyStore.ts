@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { v4 as uuid } from "uuid";
-import { DogBreed, DogPropTags, QueryTreeState } from '../types';
+import { DogBreed, DogPropTags, Operator, QueryTreeState } from '../types';
 import clone from 'clone';
 
 // Types 
@@ -13,6 +13,7 @@ export interface DoggyStore {
     setDogPropTags: (dogPropTags: DogPropTags) => void,
     selectDogPropOrNode: (id: string) => void,
     addDogPropToNode: (property: string, value: string) => void
+    addQueryNode: (operator: Operator) => void
 }
 
 export type Set = (partial: DoggyStore | Partial<DoggyStore> | ((state: DoggyStore) => DoggyStore | Partial<DoggyStore>), replace?: boolean | undefined) => void
@@ -56,7 +57,8 @@ export const useDoggyStore = create<DoggyStore>((set, get) => ({
     setDogData: (dogData: Array<DogBreed>) => set({ dogData }),
     setDogPropTags: (dogPropTags: DogPropTags) => set({ dogPropTags }),
     selectDogPropOrNode: (id: string) => selectDogPropOrNode(id, set, get),
-    addDogPropToNode: (property: string, value: string) => addDogPropToNode(property, value, set, get)
+    addDogPropToNode: (property: string, value: string) => addDogPropToNode(property, value, set, get),
+    addQueryNode: (operator: Operator) => addQueryNode(operator, set, get)
 }));
 
 // Actions and Helper Functions
@@ -77,9 +79,9 @@ const findDogPropOrNode = (node: QueryTreeState, searchId: string): QueryTreeSta
         }
     }
     if (queryNodes && queryNodes.length > 0) {
-        let node;
+        let node: QueryTreeState | undefined;
         queryNodes.forEach((child) => {
-            node = findDogPropOrNode(child, searchId);
+            node = node || findDogPropOrNode(child, searchId);
         });
         if (node) {
             return node;
@@ -106,6 +108,7 @@ const selectDogPropOrNode = (id: string, set: Set, get: Get) => {
     const { queryTree } = get();
     const newQueryTree = clone(queryTree);
     unselectAll(newQueryTree);
+    
     const node = findDogPropOrNode(newQueryTree, id);
     if (node) {
         node.selected = true;
@@ -149,3 +152,37 @@ const addDogPropToNode = (property: string, value: string, set: Set, get: Get) =
 
 }
 
+const addQueryNode = (operator: Operator, set: Set, get: Get) => {
+    const { queryTree } = get();
+    const newQueryTree = clone(queryTree);
+    const selectedNode = findSelectedNode(newQueryTree);
+    if (selectedNode) {
+        if (selectedNode.queryNodes) {
+            selectedNode.queryNodes.push({
+                id: uuid(),
+                selected: false,
+                operator: operator,
+                dogProps: [],
+                queryNodes: []
+            });
+            selectedNode.selected = false;
+        }
+    }
+    set({ queryTree: newQueryTree });
+}
+
+// Debugging **********
+const prettyPrintTree = (node: QueryTreeState, indent: number) => {
+    const { id, operator, dogProps, queryNodes } = node;
+    console.log(`${'    '.repeat(indent)}${id} ${operator}`);
+    if (dogProps && dogProps.length > 0) {
+        dogProps.forEach((dogProp) => {
+            console.log(`${'    '.repeat(indent + 2)}${dogProp.id} ${dogProp.property} ${dogProp.value}`);
+        });
+    }
+    if (queryNodes && queryNodes.length > 0) {
+        queryNodes.forEach((child) => {
+            prettyPrintTree(child, indent + 2);
+        });
+    }
+}

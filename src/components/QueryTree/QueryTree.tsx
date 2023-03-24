@@ -8,9 +8,10 @@ import classNames from 'classnames';
 
 interface QueryTreeProps {
     treeData: QueryTreeState
+    className?: string;
 }
 
-function QueryTree({ treeData }: QueryTreeProps) {
+function QueryTree({ className, treeData }: QueryTreeProps) {
     const { operator, dogProps, queryNodes, id, selected } = treeData;
     const selectDogPropOrNode = useDoggyStore(({ selectDogPropOrNode }) => selectDogPropOrNode);
     const onClickDogNode = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -20,7 +21,7 @@ function QueryTree({ treeData }: QueryTreeProps) {
         }
     }
     return (
-        <div className={classNames('queryTree', {
+        <div className={classNames(className, 'queryTree', {
             'queryTree--selected': selected
         })} onClick={onClickDogNode}>
             <div className='queryTreeHeader'>{operator}</div>
@@ -32,9 +33,11 @@ function QueryTree({ treeData }: QueryTreeProps) {
                         <DogTag key={uuid()} className="queryTreeDogTag" propName={property} value={value} id={id} selected={selected} />
                     ))}
                 </div>
-                {queryNodes?.map((childTree) => (
-                    <QueryTree key={uuid()} treeData={childTree} />
-                ))}
+                {queryNodes?.map((childTree, i) => {
+                    return <QueryTree className={classNames({
+                        "queryTree--addedMargin": i != queryNodes.length - 1
+                    })} key={uuid()} treeData={childTree} />
+                })}
             </div>
         </div>
     )

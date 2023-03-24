@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { DogPropTags, Tags } from '../../types'
+import { DogPropTags, Operator, Tags } from '../../types'
 import styles from './PropSelector.module.css'
 import { v4 as uuid } from 'uuid';
 import { colorMap } from './utils';
@@ -14,7 +14,7 @@ interface PropSelectorProps {
 function PropSelector(props: PropSelectorProps) {
     const { tags, inputValue } = props;
     const [filteredTags, setFilteredTags] = React.useState<Tags>([])
-    const [filteredBooleanTags, setFilteredBooleanTags] = React.useState<string[]>([])
+    const [filteredBooleanTags, setFilteredBooleanTags] = React.useState<Operator[]>([])
 
     // Filter all tags on input change
     useEffect(() => {
@@ -34,7 +34,8 @@ function PropSelector(props: PropSelectorProps) {
         setFilteredTags(matchingTags);
 
         // Filter Boolean Tags
-        const matchingBooleanTags = ['TRUE', 'FALSE'].filter((value) => value.toLowerCase().startsWith(inputValue));
+        const operators: Array<Operator> = ['AND', 'OR'];
+        const matchingBooleanTags: Array<Operator> = operators.filter((value: Operator) => value.toLowerCase().startsWith(inputValue));
         setFilteredBooleanTags(matchingBooleanTags);
     }, [inputValue])
 
