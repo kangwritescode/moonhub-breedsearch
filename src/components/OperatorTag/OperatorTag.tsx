@@ -1,3 +1,4 @@
+import { Button } from '@mantine/core';
 import React from 'react'
 import { useDoggyStore } from '../../store/doggyStore';
 import { Operator } from '../../types';
@@ -8,9 +9,15 @@ interface OperatorTagProps {
 }
 
 function OperatorTag({ value }: OperatorTagProps) {
-    const addQueryNode = useDoggyStore(({addQueryNode}) => addQueryNode)
+    const addQueryNode = useDoggyStore(({ addQueryNode }) => addQueryNode)
     return (
-        <span className={styles.operatorTag} onClick={() => addQueryNode(value)}>{value}</span>
+        <Button
+            className={styles.operatorTag}
+            radius="xl"
+            onClick={() => addQueryNode(value)}
+        >
+            {value}
+        </Button>
     )
 }
 

@@ -15,16 +15,16 @@ interface QueryTreeProps {
 
 function QueryTree({ className, treeData }: QueryTreeProps) {
     const { operator, dogProps, queryNodes, id, selected, isRoot } = treeData;
-    const [selectDogPropOrNode, unselectAll] = useDoggyStore(({ selectDogPropOrNode, unselectAll }) => [selectDogPropOrNode, unselectAll]);
+    const [selectDogPropOrNode, unselectAll, removeQueryNode] = useDoggyStore(({ selectDogPropOrNode, unselectAll, removeQueryNode }) => [selectDogPropOrNode, unselectAll, removeQueryNode]);
 
     const onClickDogNode = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();
-        if (id) {
-            unselectAll()
-            selectDogPropOrNode(id);
+        unselectAll() // Unselect all nodes
+        selectDogPropOrNode(id); // Select the clicked node
+        if (selected && !isRoot) {
+            removeQueryNode(id)
         }
     }
-
     return (
         <Card className={classNames(className, 'queryTree', {
             'queryTree--selected': selected,

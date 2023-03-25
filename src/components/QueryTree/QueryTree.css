@@ -21,7 +21,6 @@
     border-color: rgb(255, 120, 120);
 }
 
-/* Cover the tree on select */
 .queryTree--selected:before {
     content: "";
     position: absolute;

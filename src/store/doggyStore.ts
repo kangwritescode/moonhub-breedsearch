@@ -5,11 +5,11 @@ import clone from 'clone';
 
 // Types ------------------------------------------------
 export interface DoggyStore {
+    // State
     queryTree: QueryTreeState,
     dogData: Array<DogBreed>,
     dogPropTags: DogPropTags,
-    instantiateTree: (operator: Operator) => void,
-    setQueryTree: (queryTree: QueryTreeState) => void,
+    // Actions
     setDogData: (dogData: Array<DogBreed>) => void,
     setDogPropTags: (dogPropTags: DogPropTags) => void,
     selectDogPropOrNode: (id: string) => void,
@@ -17,6 +17,7 @@ export interface DoggyStore {
     addQueryNode: (operator: Operator) => void
     unselectAll: () => void
     removeDogProp: (id: string) => void
+    removeQueryNode: (id: string) => void
 }
 export type Set = (partial: DoggyStore | Partial<DoggyStore> | ((state: DoggyStore) => DoggyStore | Partial<DoggyStore>), replace?: boolean | undefined) => void
 export type Get = () => DoggyStore;
@@ -59,33 +60,23 @@ const initialDoggyState: QueryTreeState = {
 }
 
 export const useDoggyStore = create<DoggyStore>((set, get) => ({
+    // State ----------------------------------------------
+    dogData: [], // Used to store the data from the API
+    dogPropTags: [], // Tags generated from the dog data
     queryTree: initialDoggyState,
-    dogData: [],
-    dogPropTags: [],
-    setQueryTree: (queryTree: QueryTreeState) => set({ queryTree }),
+    // Actions --------------------------------------------
     setDogData: (dogData: Array<DogBreed>) => set({ dogData }),
     setDogPropTags: (dogPropTags: DogPropTags) => set({ dogPropTags }),
-    selectDogPropOrNode: (id: string) => selectDogPropOrNode(id, set, get),
-    addDogPropToNode: (property: string, value: string) => addDogPropToNode(property, value, set, get),
-    addQueryNode: (operator: Operator) => addQueryNode(operator, set, get),
+    // ----------------- tree actions--------------------
+    selectDogPropOrNode: (id: string) => set(state => selectDogPropOrNode(id, state.queryTree)),
+    addDogPropToNode: (property: string, value: string) => set(state => addDogPropToNode(property, value, state.queryTree)),
+    addQueryNode: (operator: Operator) => set(state => addQueryNode(operator, state.queryTree)),
     unselectAll: () => unselectAll(get().queryTree, set),
-    removeDogProp: (id: string) => removeDogProp(id, get().queryTree, set),
-    instantiateTree: (operator: Operator) => instantiateTree(operator, set)
+    removeDogProp: (id: string) => set(state => removeDogProp(id, state.queryTree)),
+    removeQueryNode: (id: string) => set(state => removeQueryNode(id, state.queryTree))
 }));
 
 // Functions -------------------------------------------
-
-const instantiateTree = (operator: Operator, set: Set) => {
-    const newQueryTree: QueryTreeState = {
-        id: uuid(),
-        selected: false,
-        operator,
-        dogProps: [],
-        queryNodes: []
-    }
-    set({ queryTree: newQueryTree });
-}
-
 const findDogPropOrNode = (node: QueryTreeState, searchId: string): QueryTreeState | undefined => {
     const { id, dogProps, queryNodes } = node;
     if (id === searchId) {
@@ -133,15 +124,13 @@ const unselectAll = (root: QueryTreeState, set: Set) => {
     set({ queryTree: newQueryTree });
 }
 
-const selectDogPropOrNode = (id: string, set: Set, get: Get) => {
-    const { queryTree } = get();
-    const newQueryTree = clone(queryTree);
-
+const selectDogPropOrNode = (id: string, root: QueryTreeState) => {
+    const newQueryTree = clone(root);
     const node = findDogPropOrNode(newQueryTree, id);
     if (node) {
         node.selected = true;
     }
-    set({ queryTree: newQueryTree });
+    return { queryTree: newQueryTree };
 }
 
 const findSelectedNode = (node: QueryTreeState): QueryTreeState | undefined => {
@@ -161,11 +150,10 @@ const findSelectedNode = (node: QueryTreeState): QueryTreeState | undefined => {
 }
 
 
-const addDogPropToNode = (property: string, value: string, set: Set, get: Get) => {
-    const { queryTree } = get();
-    const newQueryTree = clone(queryTree);
+const addDogPropToNode = (property: string, value: string, root: QueryTreeState) => {
+    const newQueryTree = clone(root);
     const selectedNode = findSelectedNode(newQueryTree);
-    
+
     if (selectedNode) {
         if (selectedNode.dogProps) {
             selectedNode.dogProps.push({
@@ -177,13 +165,12 @@ const addDogPropToNode = (property: string, value: string, set: Set, get: Get) =
             selectedNode.selected = false;
         }
     }
-    set({ queryTree: newQueryTree });
+    return { queryTree: newQueryTree };
 
 }
 
-const addQueryNode = (operator: Operator, set: Set, get: Get) => {
-    const { queryTree } = get();
-    const newQueryTree = clone(queryTree);
+const addQueryNode = (operator: Operator, root: QueryTreeState) => {
+    const newQueryTree = clone(root);
     const selectedNode = findSelectedNode(newQueryTree);
     if (selectedNode) {
         if (selectedNode.queryNodes) {
@@ -197,11 +184,11 @@ const addQueryNode = (operator: Operator, set: Set, get: Get) => {
             selectedNode.selected = false;
         }
     }
-    set({ queryTree: newQueryTree });
+    return { queryTree: newQueryTree }
 }
 
-const removeDogProp = (removeID: string, node: QueryTreeState, set: Set) => {
-    const newQueryTree = clone(node);
+const removeDogProp = (removeID: string, root: QueryTreeState) => {
+    const newQueryTree = clone(root);
     const traverseAndRemove = (node: QueryTreeState) => {
         const { dogProps, queryNodes } = node;
         if (dogProps && dogProps.length > 0) {
@@ -217,7 +204,25 @@ const removeDogProp = (removeID: string, node: QueryTreeState, set: Set) => {
         }
     }
     traverseAndRemove(newQueryTree);
-    set({ queryTree: newQueryTree });
+    return { queryTree: newQueryTree }
+}
+const removeQueryNode = (removeID: string, root: QueryTreeState) => {
+    const newQueryTree = clone(root);
+    const traverseAndRemove = (node: QueryTreeState) => {
+        const { queryNodes } = node;
+        if (queryNodes && queryNodes.length > 0) {
+            const removedNode = queryNodes.find(({ id }) => id === removeID);
+            if (removedNode) {
+                queryNodes.splice(queryNodes.indexOf(removedNode), 1);
+                return
+            }
+            queryNodes.forEach((child) => {
+                traverseAndRemove(child);
+            });
+        }
+    }
+    traverseAndRemove(newQueryTree);
+    return { queryTree: newQueryTree }
 }
 
 
@@ -237,6 +242,4 @@ const prettyPrintTree = (node: QueryTreeState, indent: number) => {
         });
     }
 }
-
-// how to fingure Prettier plugin indent spaces in VSCode?
 // https://stackoverflow.com/questions/29973357/how-to-change-the-indentation-of-code-from-4-spaces-to-2-spaces-in-visual-studio
