@@ -4,6 +4,7 @@ export interface QueryTreeState {
     operator: Operator;
     dogProps?: Array<DogProp>;
     queryNodes?: QueryTreeState[];
+    isRoot?: boolean;
 }
 
 export type Operator = "AND" | "OR";

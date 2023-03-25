@@ -6,9 +6,19 @@
     text-align: center;
     cursor: pointer;
     min-width: 100px;
+    padding-top: 10px;
 }
 .queryTree--addedMargin {
     margin-right: 20px;
+}
+
+.queryTree--selected:active.queryTree--non-root {
+    position: relative;
+    top: 2px;
+}
+
+.queryTree--selected:hover.queryTree--non-root {
+    border-color: rgb(255, 120, 120);
 }
 
 /* Cover the tree on select */
@@ -58,4 +68,8 @@
 
 .queryTreeDogTag {
     margin-bottom: 8px;
+}
+
+img {
+    border: 1px solid rgb(154, 154, 154);
 }

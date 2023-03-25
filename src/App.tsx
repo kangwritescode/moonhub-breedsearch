@@ -9,7 +9,8 @@ import './App.css'
 import { DogPropTags } from './types';
 import { v4 as uuid } from "uuid";
 import { DoggyStore, useDoggyStore } from './store/doggyStore';
-import { Flex } from '@mantine/core';
+import { Flex, Tooltip } from '@mantine/core';
+import doggySVG from './assets/doggy.svg';
 
 function App() {
     const {
@@ -17,8 +18,9 @@ function App() {
         queryTree,
         dogPropTags,
         setDogData,
-        setDogPropTags
+        setDogPropTags,
     }: DoggyStore = useDoggyStore()
+
 
     // Fetch and set dogData from csv file
     useEffect(() => {
@@ -58,6 +60,13 @@ function App() {
 
     return (
         <div className="App">
+            <Tooltip
+                label="bork bork bork 🎵"
+                color="cyan"
+                withArrow
+            >
+                <img className='doggySVG' src={doggySVG} />
+            </Tooltip>
             <Flex
                 mih={"100vh"}
                 gap={{ base: 'sm', sm: 'lg' }}
@@ -69,7 +78,6 @@ function App() {
                 <QueryTree treeData={queryTree} />
                 <QueryMaker dogTags={dogPropTags} />
             </Flex>
-
         </div>
     )
 }

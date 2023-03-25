@@ -28,7 +28,7 @@ function QueryMaker({ dogTags }: QueryMakerProps) {
             <div className={styles.inputButtonContainer}>
                 <TextInput
                     className={styles.input}
-                    placeholder="Type 'AND' or 'OR' or 'friendly"
+                    placeholder="Type 'AND' or 'OR' or 'friendly'"
                     radius="xl"
                     size="xl"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value.toLowerCase())}
