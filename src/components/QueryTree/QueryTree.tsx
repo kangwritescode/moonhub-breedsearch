@@ -1,11 +1,11 @@
 import React from 'react'
-import { QueryTreeState } from '../../types'
+import { QueryTreeState } from '../../shared/types'
 import DogTag from '../DogTag/DogTag';
 import './QueryTree.css';
 import { v4 as uuid } from 'uuid';
 import { useDoggyStore } from '../../store/doggyStore';
 import classNames from 'classnames';
-import { Card, CloseButton, Divider } from '@mantine/core';
+import { Card, Divider } from '@mantine/core';
 
 interface QueryTreeProps {
     treeData: QueryTreeState
@@ -15,12 +15,14 @@ interface QueryTreeProps {
 
 function QueryTree({ className, treeData }: QueryTreeProps) {
     const { operator, dogProps, queryNodes, id, selected, isRoot } = treeData;
-    const [selectDogPropOrNode, unselectAll, removeQueryNode] = useDoggyStore(({ selectDogPropOrNode, unselectAll, removeQueryNode }) => [selectDogPropOrNode, unselectAll, removeQueryNode]);
+    const [selectDogPropOrNode, unselectAll, removeQueryNode] = useDoggyStore(
+        ({ selectDogPropOrNode, unselectAll, removeQueryNode }) => [selectDogPropOrNode, unselectAll, removeQueryNode]);
 
     const onClickDogNode = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();
-        unselectAll() // Unselect all nodes
-        selectDogPropOrNode(id); // Select the clicked node
+        unselectAll() 
+        selectDogPropOrNode(id); 
+        // Remove the node when it's clicked twice sequentially
         if (selected && !isRoot) {
             removeQueryNode(id)
         }
@@ -33,18 +35,14 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
             <Divider my="xs" label={operator} labelPosition="center" />
             <div className='queryTreeBody'>
                 {/* Render the DogTag values */}
-                <div className={classNames('queryTreeDogProps', {
-                    'queryTreeDogProps--addedMargin': queryNodes?.length
-                })}>
+                <div className={classNames('queryTreeDogProps', { 'queryTreeDogProps--addedMargin': queryNodes?.length })}>
                     {dogProps?.map(({ property, value, id, selected }) => (
                         <DogTag key={uuid()} className="queryTreeDogTag" propName={property} value={value} id={id} selected={selected} />
                     ))}
                 </div>
                 {/* Recursively render QueryTree child nodes */}
                 {queryNodes?.map((childTree, i) => {
-                    return <QueryTree className={classNames({
-                        "queryTree--addedMargin": i != queryNodes.length - 1
-                    })} key={uuid()} treeData={childTree} />
+                    return <QueryTree key={uuid()} className={classNames({ "queryTree--addedMargin": i != queryNodes.length - 1 })} treeData={childTree} />
                 })}
             </div>
         </Card>

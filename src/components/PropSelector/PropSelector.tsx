@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { DogPropTags, Operator, Tags } from '../../types'
+import { DogPropTags, Operator, Tags } from '../../shared/types'
 import styles from './PropSelector.module.css'
 import { v4 as uuid } from 'uuid';
 import { colorMap } from './utils';

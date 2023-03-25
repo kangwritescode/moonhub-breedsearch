@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { v4 as uuid } from 'uuid';
-import { DogBreed } from '../../types'
+import { DogBreed } from '../../shared/types'
 import styles from './DogsView.module.css'
 
 interface DogsViewProps {

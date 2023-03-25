@@ -1,4 +1,4 @@
-import { ColorMap } from '../../types';
+import { ColorMap } from '../../shared/types';
 
 export const colorMap: ColorMap = {
     "Country of Origin": "skyBlue",

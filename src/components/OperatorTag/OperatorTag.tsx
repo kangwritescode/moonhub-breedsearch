@@ -1,7 +1,6 @@
 import { Button } from '@mantine/core';
-import React from 'react'
 import { useDoggyStore } from '../../store/doggyStore';
-import { Operator } from '../../types';
+import { Operator } from '../../shared/types';
 import styles from './OperatorTag.module.css';
 
 interface OperatorTagProps {

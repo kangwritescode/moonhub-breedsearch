@@ -1,5 +1,5 @@
-import React from 'react'
-import { DogPropTags } from '../../types'
+import { useState, useEffect, useRef } from 'react'
+import { DogPropTags } from '../../shared/types'
 import PropSelector from '../PropSelector/PropSelector';
 import searchSVG from './search.svg';
 
@@ -12,19 +12,19 @@ interface QueryMakerProps {
 
 function QueryMaker({ dogTags }: QueryMakerProps) {
 
-    const [inputValue, setInputValue] = React.useState<string>('')
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [inputValue, setInputValue] = useState<string>('')
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
         inputRef.current?.focus();
     }, [])
 
     return (
-        <Flex 
-        justify="center"
-        align="left"
-        direction="column"
-        wrap="wrap">
+        <Flex
+            justify="center"
+            align="left"
+            direction="column"
+            wrap="wrap">
             <div className={styles.inputButtonContainer}>
                 <TextInput
                     className={styles.input}

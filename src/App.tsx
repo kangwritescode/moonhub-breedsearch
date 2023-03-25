@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react'
-
-import { DogBreed, QueryTreeState } from './types';
+import { useEffect } from 'react'
 import QueryMaker from './components/QueryMaker/QueryMaker'
 import csvtojson from 'csvtojson';
-import DogsView from './components/DogsView/DogsView';
 import QueryTree from './components/QueryTree/QueryTree';
 import './App.css'
-import { DogPropTags } from './types';
-import { v4 as uuid } from "uuid";
+import { DogPropTags } from './shared/types';
 import { DoggyStore, useDoggyStore } from './store/doggyStore';
 import { Flex, Tooltip } from '@mantine/core';
 import doggySVG from './assets/doggy.svg';
@@ -21,11 +17,10 @@ function App() {
         setDogPropTags,
     }: DoggyStore = useDoggyStore()
 
-
     // Fetch and set dogData from csv file
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('/src/dogdata.csv');
+            const response = await fetch('/src/assets/dogdata.csv');
             const csvData = await response.text();
             const jsonData = await csvtojson().fromString(csvData);
             setDogData(jsonData);
