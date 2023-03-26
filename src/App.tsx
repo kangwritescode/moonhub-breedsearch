@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import csvtojson from 'csvtojson';
-import { Flex, Tooltip } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import classNames from 'classnames';
 import 'animate.css';
 
@@ -9,6 +9,7 @@ import { DoggyStore, useDoggyStore } from './store/doggyStore';
 import { useUIStore } from './store/UIStore';
 import './App.css'
 import paw from './assets/paw.svg'
+import { csvData } from './assets/dogdata'
 
 import QueryMaker from './components/QueryMaker/QueryMaker'
 import QueryTree from './components/QueryTree/QueryTree';
@@ -26,8 +27,6 @@ function App() {
     // Fetch and set dogData from csv file
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('/dogdata.csv');
-            const csvData = await response.text();
             const jsonData = await csvtojson().fromString(csvData);
             setDogData(jsonData);
         }
