@@ -61,7 +61,6 @@ export const useDoggyStore = create<DoggyStore>((set) => ({
     dogData: [], // Used to store the data from the API
     dogPropTags: [], // Tags generated from the dog data
     queryTree: initialQueryTree,
-    searchQuery: [],
     // Actions --------------------------------------------
     setDogData: (dogData: Array<DogBreed>) => set({ dogData }),
     setDogPropTags: (dogPropTags: DogPropTags) => set({ dogPropTags }),

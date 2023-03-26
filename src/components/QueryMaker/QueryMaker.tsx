@@ -4,7 +4,7 @@ import PropSelector from '../PropSelector/PropSelector';
 import searchSVG from './search.svg';
 
 import styles from './QueryMaker.module.css'
-import { Button, createStyles, Flex, TextInput } from '@mantine/core';
+import { Button, Flex, TextInput } from '@mantine/core';
 import { useUIStore } from '../../store/UIStore';
 
 interface QueryMakerProps {

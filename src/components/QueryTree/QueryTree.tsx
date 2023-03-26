@@ -44,7 +44,7 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
                 {/* Render the DogTag values */}
                 <div className={classNames('query-tree-dog-props',
                     { 'query-tree-dog-props--added-margin': queryNodes?.length })}>
-                    {dogProps.map(({ property, value, id, selected }) => (
+                    {dogProps.map(({ property, value, id }) => (
                         <DogTag
                             key={uuid()}
                             className="query-tree-dog-tag"

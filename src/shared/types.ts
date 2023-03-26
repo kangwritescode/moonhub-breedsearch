@@ -16,18 +16,7 @@ export type DogProp = {
     value: string;
 };
 
-export type Dog = {
-    [key: string]: string;
-}
-
-export type Store = {
-    queryTree: QueryTreeState,
-    dogData: Array<Dog>
-    filteredDogs: Array<Dog>
-}
-
 export type DogPropTags = Array<DogPropTag>
-
 export type DogPropTag = Array<string>;
 
 export type DogBreed = {
@@ -41,8 +30,4 @@ export type DogBreed = {
 
 export type Tag = Array<string>
 export type Tags = Array<Tag>
-
-export type ColorMap = {
-    [key: string]: string;
-}
 
