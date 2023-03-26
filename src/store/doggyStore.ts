@@ -9,7 +9,6 @@ export interface DoggyStore {
     queryTree: QueryTreeState,
     dogData: Array<DogBreed>,
     dogPropTags: DogPropTags,
-    searchQuery: Array<string>,
     // Actions
     setDogData: (dogData: Array<DogBreed>) => void,
     setDogPropTags: (dogPropTags: DogPropTags) => void,
@@ -19,10 +18,7 @@ export interface DoggyStore {
     unselectAll: () => void
     removeDogProp: (id: string) => void
     removeQueryNode: (id: string) => void
-    generateSearchQuery: () => void
 }
-export type Set = (partial: DoggyStore | Partial<DoggyStore> | ((state: DoggyStore) => DoggyStore | Partial<DoggyStore>), replace?: boolean | undefined) => void
-
 // Store -----------------------------------------------
 const initialQueryTree: QueryTreeState = {
     id: uuid(),
@@ -76,7 +72,6 @@ export const useDoggyStore = create<DoggyStore>((set) => ({
     unselectAll: () => set(state => unselectAll(state.queryTree)),
     removeDogProp: (id: string) => set(state => removeDogProp(id, state.queryTree)),
     removeQueryNode: (id: string) => set(state => removeQueryNode(id, state.queryTree)),
-    generateSearchQuery: () => set(state => generateSearchQuery(state.queryTree)),
 }));
 
 // Functions -------------------------------------------
@@ -85,26 +80,16 @@ const findDogPropOrNode = (node: QueryTreeState, searchId: string): QueryTreeSta
     if (id === searchId) {
         return node;
     }
-    if (dogProps && dogProps.length > 0) {
-        let foundDogProp;
-        dogProps.forEach((dogProp) => {
-            if (dogProp.id === searchId) {
-                foundDogProp = dogProp;
-            }
-        });
-        if (foundDogProp) {
-            return foundDogProp;
+    dogProps.forEach((dogProp) => {
+        if (dogProp.id === searchId) {
+            return dogProp
         }
-    }
-    if (queryNodes && queryNodes.length > 0) {
-        let node: QueryTreeState | undefined;
-        queryNodes.forEach((child) => {
-            node = node || findDogPropOrNode(child, searchId);
-        });
-        if (node) {
-            return node;
-        }
-    }
+    });
+    let foundNode: QueryTreeState | undefined;
+    queryNodes.forEach((child) => {
+        foundNode = foundNode || findDogPropOrNode(child, searchId);
+    });
+    return foundNode;
 }
 
 const unselectAll = (root: QueryTreeState) => {
@@ -112,16 +97,12 @@ const unselectAll = (root: QueryTreeState) => {
     const traverseAndUnselect = (node: QueryTreeState) => {
         const { dogProps, queryNodes } = node;
         node.selected = false;
-        if (dogProps && dogProps.length > 0) {
-            dogProps.forEach((dogProp) => {
-                dogProp.selected = false;
-            });
-        }
-        if (queryNodes && queryNodes.length > 0) {
-            queryNodes.forEach((child) => {
-                traverseAndUnselect(child);
-            });
-        }
+        dogProps.forEach((dogProp) => {
+            dogProp.selected = false;
+        });
+        queryNodes.forEach((child) => {
+            traverseAndUnselect(child);
+        });
     }
     traverseAndUnselect(newQueryTree);
     return { queryTree: newQueryTree }
@@ -141,31 +122,24 @@ const findSelectedNode = (node: QueryTreeState): QueryTreeState | undefined => {
     if (selected) {
         return node;
     }
-    else if (queryNodes && queryNodes.length > 0) {
-        let node: QueryTreeState | undefined;
-        queryNodes.forEach((child) => {
-            node = node || findSelectedNode(child);
-        });
-        if (node) {
-            return node;
-        }
-    }
+    let selectedNode: QueryTreeState | undefined;
+    queryNodes.forEach((child) => {
+        selectedNode = selectedNode || findSelectedNode(child);
+    });
+    return selectedNode;
 }
 
 const addDogPropToNode = (property: string, value: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const selectedNode = findSelectedNode(newQueryTree);
-
     if (selectedNode) {
-        if (selectedNode.dogProps) {
-            selectedNode.dogProps.push({
-                id: uuid(),
-                selected: false,
-                property,
-                value
-            });
-            selectedNode.selected = false;
-        }
+        selectedNode.dogProps.push({
+            id: uuid(),
+            selected: false,
+            property,
+            value
+        });
+        selectedNode.selected = false;
     }
     return { queryTree: newQueryTree };
 
@@ -175,16 +149,14 @@ const addQueryNode = (operator: Operator, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const selectedNode = findSelectedNode(newQueryTree);
     if (selectedNode) {
-        if (selectedNode.queryNodes) {
-            selectedNode.queryNodes.push({
-                id: uuid(),
-                selected: false,
-                operator: operator,
-                dogProps: [],
-                queryNodes: []
-            });
-            selectedNode.selected = false;
-        }
+        selectedNode.queryNodes.push({
+            id: uuid(),
+            selected: false,
+            operator: operator,
+            dogProps: [],
+            queryNodes: []
+        });
+        selectedNode.selected = false;
     }
     return { queryTree: newQueryTree }
 }
@@ -193,17 +165,13 @@ const removeDogProp = (removeID: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const traverseAndRemove = (node: QueryTreeState) => {
         const { dogProps, queryNodes } = node;
-        if (dogProps && dogProps.length > 0) {
-            const removedDogProp = dogProps.find(({ id }) => id === removeID);
-            if (removedDogProp) {
-                dogProps.splice(dogProps.indexOf(removedDogProp), 1);
-            }
+        const removedDogProp = dogProps.find(({ id }) => id === removeID);
+        if (removedDogProp) {
+            dogProps.splice(dogProps.indexOf(removedDogProp), 1);
         }
-        if (queryNodes && queryNodes.length > 0) {
-            queryNodes.forEach((child) => {
-                traverseAndRemove(child);
-            });
-        }
+        queryNodes.forEach((child) => {
+            traverseAndRemove(child);
+        });
     }
     traverseAndRemove(newQueryTree);
     return { queryTree: newQueryTree }
@@ -212,42 +180,18 @@ const removeQueryNode = (removeID: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const traverseAndRemove = (node: QueryTreeState) => {
         const { queryNodes } = node;
-        if (queryNodes && queryNodes.length > 0) {
-            const removedNode = queryNodes.find(({ id }) => id === removeID);
-            if (removedNode) {
-                queryNodes.splice(queryNodes.indexOf(removedNode), 1);
-                return
-            }
-            queryNodes.forEach((child) => {
-                traverseAndRemove(child);
-            });
+        const removedNode = queryNodes.find(({ id }) => id === removeID);
+        if (removedNode) {
+            queryNodes.splice(queryNodes.indexOf(removedNode), 1);
+            return
         }
+        queryNodes.forEach((child) => {
+            traverseAndRemove(child);
+        });
     }
     traverseAndRemove(newQueryTree);
     return { queryTree: newQueryTree }
 }
-
-const generateSearchQuery = (root: QueryTreeState) => {
-    const searchTerms: Array<string> = [];
-    const traverseAndGenerate = (node: QueryTreeState) => {
-        const { dogProps, queryNodes } = node;
-        if (dogProps && dogProps.length > 0) {
-            dogProps.forEach((dogProp) => {
-                searchTerms.push(`${dogProp.property}:${dogProp.value}`);
-            });
-        }
-        if (queryNodes && queryNodes.length > 0) {
-            queryNodes.forEach((child) => {
-                traverseAndGenerate(child);
-            });
-        }
-    }
-    traverseAndGenerate(root);
-
-    return { searchQuery: searchTerms }
-}
-
-
 
 // Debugging -------------------------------------------
 const prettyPrintTree = (node: QueryTreeState, indent: number) => {

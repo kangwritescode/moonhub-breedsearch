@@ -2,8 +2,8 @@ export interface QueryTreeState {
     id: string;
     selected: boolean;
     operator: Operator;
-    dogProps?: Array<DogProp>;
-    queryNodes?: QueryTreeState[];
+    dogProps: Array<DogProp>;
+    queryNodes: QueryTreeState[];
     isRoot?: boolean;
 }
 
