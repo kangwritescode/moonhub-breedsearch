@@ -26,7 +26,7 @@ function App() {
     // Fetch and set dogData from csv file
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('/src/assets/dogdata.csv');
+            const response = await fetch('/dogdata.csv');
             const csvData = await response.text();
             const jsonData = await csvtojson().fromString(csvData);
             setDogData(jsonData);
