@@ -22,15 +22,15 @@ function DogTag(props: DogTagProps) {
     } = props;
 
     // State
-    const [addDogPropToNode, unselectAll, removeDogProp] = useDoggyStore(
-        (state) => [state.addDogPropToNode, state.unselectAll, state.removeDogProp]
+    const [addDogProp, unselectAll, removeDogProp] = useDoggyStore(
+        (state) => [state.addDogProp, state.unselectAll, state.removeDogProp]
     );
 
     // Handlers
     const onClickHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         e.stopPropagation();
         if (!id) {
-            return addDogPropToNode(propName, value);
+            return addDogProp(propName, value);
         };
         unselectAll();
         removeDogProp(id);

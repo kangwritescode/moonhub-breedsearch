@@ -8,12 +8,12 @@ interface OperatorTagProps {
 }
 
 function OperatorTag({ value }: OperatorTagProps) {
-    const addQueryNode = useDoggyStore(({ addQueryNode }) => addQueryNode)
+    const addNode = useDoggyStore(({ addNode }) => addNode)
     return (
         <Button
             className={styles.operatorTag}
             radius="xl"
-            onClick={() => addQueryNode(value)}>
+            onClick={() => addNode(value)}>
             {value}
         </Button>
     )

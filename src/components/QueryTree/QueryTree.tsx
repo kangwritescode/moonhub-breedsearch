@@ -17,15 +17,15 @@ interface QueryTreeProps {
 function QueryTree({ className, treeData }: QueryTreeProps) {
     const { operator, dogProps, queryNodes, id, selected, isRoot } = treeData;
     // State
-    const [selectDogPropOrNode, unselectAll, removeQueryNode] = useDoggyStore(
-        (state) => [state.selectDogPropOrNode, state.unselectAll, state.removeQueryNode]);
+    const [selectNode, unselectAll, removeQueryNode] = useDoggyStore(
+        (state) => [state.selectNode, state.unselectAll, state.removeQueryNode]);
     const setShowResults = useUIStore(state => state.setShowResults);
 
     // Handlers
     const onClickDogNode = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation();
         unselectAll()
-        selectDogPropOrNode(id);
+        selectNode(id);
         // Remove the node when it's clicked twice sequentially
         if (selected && !isRoot) {
             removeQueryNode(id)

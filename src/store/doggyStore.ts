@@ -12,9 +12,9 @@ export interface DoggyStore {
     // Actions
     setDogData: (dogData: Array<DogBreed>) => void,
     setDogPropTags: (dogPropTags: DogPropTags) => void,
-    selectDogPropOrNode: (id: string) => void,
-    addDogPropToNode: (property: string, value: string) => void
-    addQueryNode: (operator: Operator) => void
+    selectNode: (id: string) => void,
+    addDogProp: (property: string, value: string) => void
+    addNode: (operator: Operator) => void
     unselectAll: () => void
     removeDogProp: (id: string) => void
     removeQueryNode: (id: string) => void
@@ -65,16 +65,16 @@ export const useDoggyStore = create<DoggyStore>((set) => ({
     setDogData: (dogData: Array<DogBreed>) => set({ dogData }),
     setDogPropTags: (dogPropTags: DogPropTags) => set({ dogPropTags }),
     // ----------------- tree actions--------------------
-    selectDogPropOrNode: (id: string) => set(state => selectDogPropOrNode(id, state.queryTree)),
-    addDogPropToNode: (property: string, value: string) => set(state => addDogPropToNode(property, value, state.queryTree)),
-    addQueryNode: (operator: Operator) => set(state => addQueryNode(operator, state.queryTree)),
+    selectNode: (id: string) => set(state => selectNode(id, state.queryTree)),
+    addDogProp: (property: string, value: string) => set(state => addDogProp(property, value, state.queryTree)),
+    addNode: (operator: Operator) => set(state => addNode(operator, state.queryTree)),
     unselectAll: () => set(state => unselectAll(state.queryTree)),
     removeDogProp: (id: string) => set(state => removeDogProp(id, state.queryTree)),
     removeQueryNode: (id: string) => set(state => removeQueryNode(id, state.queryTree)),
 }));
 
 // Functions -------------------------------------------
-const findDogPropOrNode = (node: QueryTreeState, searchId: string): QueryTreeState | undefined => {
+const findNode = (node: QueryTreeState, searchId: string): QueryTreeState | undefined => {
     const { id, dogProps, queryNodes } = node;
     if (id === searchId) {
         return node;
@@ -86,7 +86,7 @@ const findDogPropOrNode = (node: QueryTreeState, searchId: string): QueryTreeSta
     });
     let foundNode: QueryTreeState | undefined;
     queryNodes.forEach((child) => {
-        foundNode = foundNode || findDogPropOrNode(child, searchId);
+        foundNode = foundNode || findNode(child, searchId);
     });
     return foundNode;
 }
@@ -107,9 +107,9 @@ const unselectAll = (root: QueryTreeState) => {
     return { queryTree: newQueryTree }
 }
 
-const selectDogPropOrNode = (id: string, root: QueryTreeState) => {
+const selectNode = (id: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
-    const node = findDogPropOrNode(newQueryTree, id);
+    const node = findNode(newQueryTree, id);
     if (node) {
         node.selected = true;
     }
@@ -128,7 +128,7 @@ const findSelectedNode = (node: QueryTreeState): QueryTreeState | undefined => {
     return selectedNode;
 }
 
-const addDogPropToNode = (property: string, value: string, root: QueryTreeState) => {
+const addDogProp = (property: string, value: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const selectedNode = findSelectedNode(newQueryTree);
     if (selectedNode) {
@@ -144,7 +144,7 @@ const addDogPropToNode = (property: string, value: string, root: QueryTreeState)
 
 }
 
-const addQueryNode = (operator: Operator, root: QueryTreeState) => {
+const addNode = (operator: Operator, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const selectedNode = findSelectedNode(newQueryTree);
     if (selectedNode) {
