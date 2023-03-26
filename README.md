@@ -13,7 +13,7 @@ Navigate to the root directory using your preferred command line and run the fol
 ## User Instructions
 BreedSearch is intuitively designed, and should be easy to figure out by playing with it. 
 
-Simply enter a dog attribute in the input, click a boolean expression block, and click one of colored tags in order to add it to the selected boolean expression.
+Simply enter a dog attribute in the input, click a boolean expression block, and click one of the colored tags in order to add it to the selected boolean expression.
 
 To remove an attribute from a block, simply click it. To remove a boolean expression block, click it twice sequentially.
 
