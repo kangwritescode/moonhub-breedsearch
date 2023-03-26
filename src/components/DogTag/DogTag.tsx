@@ -9,7 +9,6 @@ import { Button } from "@mantine/core";
 interface DogTagProps {
     className?: string;
     id?: string;
-    selected?: boolean;
     propName: string;
     value: string;
 }
@@ -20,18 +19,12 @@ function DogTag(props: DogTagProps) {
         propName,
         value,
         id, // Determines whether the component is a "tag" or a "button"
-        selected 
     } = props;
 
     // State
-    const [addDogPropToNode, unselectAll, removeDogProp] =
-        useDoggyStore(
-            ({
-                addDogPropToNode,
-                unselectAll,
-                removeDogProp,
-            }) => [addDogPropToNode, unselectAll, removeDogProp]
-        );
+    const [addDogPropToNode, unselectAll, removeDogProp] = useDoggyStore(
+        (state) => [state.addDogPropToNode, state.unselectAll, state.removeDogProp]
+    );
 
     // Handlers
     const onClickHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
@@ -45,17 +38,15 @@ function DogTag(props: DogTagProps) {
 
     // Styling 
     const tagStyles = !id ? styles.tagStyles : "";
-    const extraEyesDescription = propName === "Color of Eyes" ? " (eyes)" : "";
     const BGColor = styles[colorMap[propName]];
-    const spanStyles = [styles.dogProp, tagStyles, BGColor].join(" ");
+    const buttonStyles = [styles.dogProp, tagStyles, BGColor].join(" ");
+    const extraEyesDescription = propName === "Color of Eyes" ? " (eyes)" : "";
 
     return (
         <Button
             radius="xl"
             key={uuid()}
-            className={classNames(className, spanStyles, {
-                [styles.selected]: selected,
-            })}
+            className={classNames(className, buttonStyles)}
             onClick={onClickHandler}
         >
             {value.toLowerCase() + extraEyesDescription}

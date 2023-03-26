@@ -16,7 +16,7 @@ function DogsView({ data }: DogsViewProps) {
         state.setIsAnimating(false);
         state.setShowResults(false)
     });
-    
+
     // Create the table body
     const tbody: Array<ReactNode> = [];
     if (data && data.length) {
@@ -34,7 +34,7 @@ function DogsView({ data }: DogsViewProps) {
             justify="center"
             align="center"
             direction="column">
-            <h1 ><u>Dogs.</u></h1>
+            <h1><u>Dogs.</u></h1>
             <div className='dogsTableWrapper'>
                 <Table
                     className='dogsTable'

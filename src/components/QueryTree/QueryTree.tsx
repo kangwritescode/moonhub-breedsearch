@@ -18,7 +18,7 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
     const { operator, dogProps, queryNodes, id, selected, isRoot } = treeData;
     // State
     const [selectDogPropOrNode, unselectAll, removeQueryNode] = useDoggyStore(
-        ({ selectDogPropOrNode, unselectAll, removeQueryNode }) => [selectDogPropOrNode, unselectAll, removeQueryNode]);
+        (state) => [state.selectDogPropOrNode, state.unselectAll, state.removeQueryNode]);
     const setShowResults = useUIStore(state => state.setShowResults);
 
     // Handlers
@@ -44,18 +44,17 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
                 {/* Render the DogTag values */}
                 <div className={classNames('query-tree-dog-props',
                     { 'query-tree-dog-props--added-margin': queryNodes?.length })}>
-                    {dogProps?.map(({ property, value, id, selected }) => (
+                    {dogProps.map(({ property, value, id, selected }) => (
                         <DogTag
                             key={uuid()}
                             className="query-tree-dog-tag"
                             propName={property}
                             value={value}
-                            id={id}
-                            selected={selected} />
+                            id={id}/>
                     ))}
                 </div>
                 {/* Recursively render QueryTree child nodes */}
-                {queryNodes?.map((childTree, i) => {
+                {queryNodes.map((childTree, i) => {
                     return (
                         <QueryTree
                             key={uuid()}

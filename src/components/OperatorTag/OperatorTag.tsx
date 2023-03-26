@@ -13,8 +13,7 @@ function OperatorTag({ value }: OperatorTagProps) {
         <Button
             className={styles.operatorTag}
             radius="xl"
-            onClick={() => addQueryNode(value)}
-        >
+            onClick={() => addQueryNode(value)}>
             {value}
         </Button>
     )

@@ -13,11 +13,13 @@ interface QueryMakerProps {
 }
 
 function QueryMaker({ dogTags, className }: QueryMakerProps) {
-    // State (and ref)
+    // State
     const startAnimation = useUIStore(state => () => state.setIsAnimating(true))
     const [inputValue, setInputValue] = useState<string>('')
+
     const inputRef = useRef<HTMLInputElement>(null);
     
+    // Autofocus on mount
     useEffect(() => {
         inputRef.current?.focus();
     }, [])

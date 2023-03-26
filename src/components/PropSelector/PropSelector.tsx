@@ -17,7 +17,7 @@ function PropSelector(props: PropSelectorProps) {
     const [filteredTags, setFilteredTags] = React.useState<Tags>([])
     const [filteredBooleanTags, setFilteredBooleanTags] = React.useState<Operator[]>([])
 
-    // Filter all tags on input change
+    // Filter tags on input change
     useEffect(() => {
         // Clear input when no value
         if (inputValue === '') {
