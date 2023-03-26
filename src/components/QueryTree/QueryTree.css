@@ -1,4 +1,4 @@
-.queryTree {
+.query-tree {
     position: relative;
     border: 2px solid rgb(154, 154, 154);
     border-radius: 18px;
@@ -8,20 +8,20 @@
     min-width: 100px;
     padding-top: 10px;
 }
-.queryTree--addedMargin {
+.query-tree--added-margin {
     margin-right: 20px;
 }
 
-.queryTree--selected:active.queryTree--non-root {
+.query-tree--selected:active.query-tree--non-root {
     position: relative;
     top: 2px;
 }
 
-.queryTree--selected:hover.queryTree--non-root {
+.query-tree--selected:hover.query-tree--non-root {
     border-color: rgb(255, 120, 120);
 }
 
-.queryTree--selected:before {
+.query-tree--selected:before {
     content: "";
     position: absolute;
     top: 0;
@@ -33,7 +33,7 @@
     z-index: 1;
     pointer-events: none;
 }
-.queryTree--selected:after {
+.query-tree--selected:after {
     content: "";
     position: absolute;
     top: 0;
@@ -47,25 +47,25 @@
     pointer-events: none;
 }
 
-.queryTree--selected {
+.query-tree--selected {
     border: 2px solid orange;
 }
 
-.queryTreeDogProps {
+.query-tree-dog-props {
     display: flex;
     flex-direction: column;
 }
-.queryTreeDogProps--addedMargin {
+.query-tree-dog-props--added-margin {
     margin-right: 20px;
 }
 
-.queryTreeBody {
+.query-tree-body {
     padding: 6px;
     display: flex;
     flex-direction: row;
 }
 
-.queryTreeDogTag {
+.query-tree-dog-tag {
     margin-bottom: 8px;
 }
 

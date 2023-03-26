@@ -33,21 +33,21 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
     }
     return (
         <Card
-            className={classNames(className, 'queryTree', {
-                'queryTree--selected': selected,
-                'queryTree--non-root': !isRoot
+            className={classNames(className, 'query-tree', {
+                'query-tree--selected': selected,
+                'query-tree--non-root': !isRoot
             })}
             onClick={onClickDogNode}
             onAnimationEnd={() => setShowResults(true)}>
             <Divider my="xs" label={operator} labelPosition="center" />
-            <div className='queryTreeBody'>
+            <div className='query-tree-body'>
                 {/* Render the DogTag values */}
-                <div className={classNames('queryTreeDogProps',
-                    { 'queryTreeDogProps--addedMargin': queryNodes?.length })}>
+                <div className={classNames('query-tree-dog-props',
+                    { 'query-tree-dog-props--added-margin': queryNodes?.length })}>
                     {dogProps?.map(({ property, value, id, selected }) => (
                         <DogTag
                             key={uuid()}
-                            className="queryTreeDogTag"
+                            className="query-tree-dog-tag"
                             propName={property}
                             value={value}
                             id={id}
@@ -59,7 +59,7 @@ function QueryTree({ className, treeData }: QueryTreeProps) {
                     return (
                         <QueryTree
                             key={uuid()}
-                            className={classNames({ "queryTree--addedMargin": i != queryNodes.length - 1 })}
+                            className={classNames({ "query-tree--added-margin": i != queryNodes.length - 1 })}
                             treeData={childTree} />
                     )
                 })}

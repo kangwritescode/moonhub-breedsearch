@@ -13,7 +13,7 @@ function DogWidget() {
             color="cyan"
             withArrow>
             <img
-                className={classNames('doggySVG', {
+                className={classNames('doggy-svg', {
                     'animate__animated animate__bounceOutLeft': isAnimating,
                     'animation--creep-in': !showResults && !isAnimating
                 })}

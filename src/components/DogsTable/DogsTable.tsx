@@ -29,7 +29,7 @@ function DogsView({ data }: DogsViewProps) {
 
     return (
         <Flex
-            className="dogsTableContainer animate__animated animate__zoomInDown"
+            className="dogs-table-container animate__animated animate__zoomInDown"
             p={0}
             justify="center"
             align="center"
