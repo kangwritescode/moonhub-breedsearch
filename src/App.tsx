@@ -1,21 +1,27 @@
 import { useEffect } from 'react'
-import QueryMaker from './components/QueryMaker/QueryMaker'
 import csvtojson from 'csvtojson';
-import QueryTree from './components/QueryTree/QueryTree';
-import './App.css'
+import { Flex, Tooltip } from '@mantine/core';
+import classNames from 'classnames';
+import 'animate.css';
+
 import { DogPropTags } from './shared/types';
 import { DoggyStore, useDoggyStore } from './store/doggyStore';
-import { Flex, Tooltip } from '@mantine/core';
-import doggySVG from './assets/doggy.svg';
+import { useUIStore } from './store/UIStore';
+import './App.css'
+import paw from './assets/paw.svg'
+
+import QueryMaker from './components/QueryMaker/QueryMaker'
+import QueryTree from './components/QueryTree/QueryTree';
+import DogsTable from './components/DogsTable/DogsTable';
+import DogWidget from './components/DogWidget/DogWidget';
 
 function App() {
-    const {
-        dogData,
-        queryTree,
-        dogPropTags,
-        setDogData,
-        setDogPropTags,
-    }: DoggyStore = useDoggyStore()
+    // Local UI State
+    const showResults = useUIStore(state => state.showResults)
+    const isAnimating = useUIStore(state => state.isAnimating)
+    // Doggy Store
+    const { dogData, queryTree, dogPropTags }: DoggyStore = useDoggyStore()
+    const { setDogData, setDogPropTags, }: DoggyStore = useDoggyStore()
 
     // Fetch and set dogData from csv file
     useEffect(() => {
@@ -32,7 +38,7 @@ function App() {
     useEffect(() => {
         if (dogData.length) {
             const tags: DogPropTags = []
-            const seenDogProps = new Set();
+            const seenDogProps = new Set(); // Cache to avoid duplicates
             // For each row
             dogData.forEach((dog) => {
                 // For each dog property
@@ -54,26 +60,30 @@ function App() {
     }, [dogData])
 
     return (
-        <div className="App">
-            <Tooltip
-                label="bork bork bork 🎵"
-                color="cyan"
-                withArrow
-            >
-                <img className='doggySVG' src={doggySVG} />
-            </Tooltip>
-            <Flex
-                mih={"100vh"}
-                gap={{ base: 'sm', sm: 'lg' }}
-                justify="center"
-                align="center"
-                direction="column"
-                wrap="wrap"
-            >
-                <QueryTree treeData={queryTree} />
-                <QueryMaker dogTags={dogPropTags} />
-            </Flex>
-        </div>
+        <Flex
+            className="App"
+            justify="center"
+            align="center"
+            direction="column">
+            <img className='paw' src={paw} />
+            <DogWidget />
+            {!showResults && (
+                <Flex
+                    mih={"100vh"}
+                    justify="center"
+                    align="center"
+                    direction="column"
+                    wrap="wrap">
+                    <QueryTree
+                        className={classNames({ 'animate__animated animate__bounceOutUp': isAnimating })}
+                        treeData={queryTree} />
+                    <QueryMaker
+                        className={classNames({ 'animate__animated animate__bounceOutDown': isAnimating })}
+                        dogTags={dogPropTags} />
+                </Flex>
+            )}
+            {showResults && <DogsTable data={dogData} />}
+        </Flex>
     )
 }
 

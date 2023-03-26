@@ -8,6 +8,15 @@
     align-items: center;
     margin-top: 36px;
 }
+@media (max-width: 768px) {
+    .inputButtonContainer {
+        align-items: flex-start;
+    }
+    .input {
+        margin-bottom: 20px; 
+        width: 100%;
+    }
+}
 
 .button {
     border: 1px solid #ccc;

@@ -12,6 +12,7 @@
     "@emotion/react": "^11.10.6",
     "@mantine/core": "^6.0.4",
     "@mantine/hooks": "^6.0.4",
+    "animate.css": "^4.1.1",
     "classnames": "^2.3.2",
     "clone": "^2.1.2",
     "csvtojson": "^2.0.10",

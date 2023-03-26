@@ -1,0 +1,11 @@
+.dogsTableContainer {
+    position: relative;
+    overflow: auto;
+}
+.dogsTableWrapper {
+    height: 55%;
+    overflow: auto;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    background-color: whitesmoke;
+}

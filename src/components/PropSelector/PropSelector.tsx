@@ -13,6 +13,7 @@ interface PropSelectorProps {
 
 function PropSelector(props: PropSelectorProps) {
     const { tags, inputValue } = props;
+    // State
     const [filteredTags, setFilteredTags] = React.useState<Tags>([])
     const [filteredBooleanTags, setFilteredBooleanTags] = React.useState<Operator[]>([])
 

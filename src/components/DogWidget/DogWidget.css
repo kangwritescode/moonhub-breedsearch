@@ -1,0 +1,19 @@
+.doggySVG {
+    position: absolute;
+    bottom: -34px;
+    left: 4%;
+    height: 120px;
+    opacity: .8;
+    cursor: pointer;
+}
+.animation--creep-in {
+    animation: doggy ease-out 6s;
+}
+@keyframes doggy {
+    0% {
+        transform: translateY(100px)
+    }
+    100% {
+        transform: translateY(0%)
+    }
+}

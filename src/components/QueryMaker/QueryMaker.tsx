@@ -4,23 +4,27 @@ import PropSelector from '../PropSelector/PropSelector';
 import searchSVG from './search.svg';
 
 import styles from './QueryMaker.module.css'
-import { Button, Flex, TextInput } from '@mantine/core';
+import { Button, createStyles, Flex, TextInput } from '@mantine/core';
+import { useUIStore } from '../../store/UIStore';
 
 interface QueryMakerProps {
     dogTags: DogPropTags;
+    className?: string;
 }
 
-function QueryMaker({ dogTags }: QueryMakerProps) {
-
+function QueryMaker({ dogTags, className }: QueryMakerProps) {
+    // State (and ref)
+    const startAnimation = useUIStore(state => () => state.setIsAnimating(true))
     const [inputValue, setInputValue] = useState<string>('')
     const inputRef = useRef<HTMLInputElement>(null);
-
+    
     useEffect(() => {
         inputRef.current?.focus();
     }, [])
 
     return (
         <Flex
+            className={className}
             justify="center"
             align="left"
             direction="column"
@@ -34,7 +38,13 @@ function QueryMaker({ dogTags }: QueryMakerProps) {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value.toLowerCase())}
                     ref={inputRef}
                 />
-                <Button className={styles.button} variant="white" radius="xl" size="xl" tabIndex={-1}>
+                <Button
+                    className={styles.button}
+                    variant="white"
+                    radius="xl"
+                    size="xl"
+                    tabIndex={-1}
+                    onClick={() => startAnimation()}>
                     <img className={styles.img} src={searchSVG} />
                 </Button>
             </div>

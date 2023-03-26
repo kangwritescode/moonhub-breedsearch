@@ -1,9 +1,0 @@
-table {
-    max-width: 200px;
-    font-size: 13px;
-    text-align: left;
-}
-.tableContainer {
-    max-height: 500px;
-    overflow: auto;
-}

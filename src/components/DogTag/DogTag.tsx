@@ -15,9 +15,15 @@ interface DogTagProps {
 }
 
 function DogTag(props: DogTagProps) {
-    const { className, propName, value, id, selected } = props;
-    const isTag = !id;
-    const tagStyles = isTag ? styles.tagStyles : "";
+    const {
+        className,
+        propName,
+        value,
+        id, // Determines whether the component is a "tag" or a "button"
+        selected 
+    } = props;
+
+    // State
     const [addDogPropToNode, unselectAll, removeDogProp] =
         useDoggyStore(
             ({
@@ -27,18 +33,22 @@ function DogTag(props: DogTagProps) {
             }) => [addDogPropToNode, unselectAll, removeDogProp]
         );
 
+    // Handlers
     const onClickHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         e.stopPropagation();
-        if (isTag) {
+        if (!id) {
             return addDogPropToNode(propName, value);
         };
         unselectAll();
         removeDogProp(id);
     }
 
-    const spanBGColor = styles[colorMap[propName]];
-    const spanStyles = [styles.dogProp, tagStyles, spanBGColor].join(" ");
+    // Styling 
+    const tagStyles = !id ? styles.tagStyles : "";
     const extraEyesDescription = propName === "Color of Eyes" ? " (eyes)" : "";
+    const BGColor = styles[colorMap[propName]];
+    const spanStyles = [styles.dogProp, tagStyles, BGColor].join(" ");
+
     return (
         <Button
             radius="xl"
