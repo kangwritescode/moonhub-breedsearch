@@ -77,7 +77,7 @@ export const useDoggyStore = create<DoggyStore>((set, get) => ({
         const newState = await addNode(operator, get().queryTree);
         set(newState);
     },
-    unselectAll: async () => {
+    unselectAll: () => {
         const newState = unselectAll(get().queryTree);
         set(newState);
     },
