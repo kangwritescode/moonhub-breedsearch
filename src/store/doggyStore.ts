@@ -56,7 +56,7 @@ const initialQueryTree: QueryTreeState = {
     }]
 }
 
-export const useDoggyStore = create<DoggyStore>((set) => ({
+export const useDoggyStore = create<DoggyStore>((set, get) => ({
     // State ----------------------------------------------
     dogData: [], // Used to store the data from the API
     dogPropTags: [], // Tags generated from the dog data
@@ -65,49 +65,59 @@ export const useDoggyStore = create<DoggyStore>((set) => ({
     setDogData: (dogData: Array<DogBreed>) => set({ dogData }),
     setDogPropTags: (dogPropTags: DogPropTags) => set({ dogPropTags }),
     // ----------------- tree actions--------------------
-    selectNode: (id: string) => set(state => selectNode(id, state.queryTree)),
-    addDogProp: (property: string, value: string) => set(state => addDogProp(property, value, state.queryTree)),
-    addNode: (operator: Operator) => set(state => addNode(operator, state.queryTree)),
-    unselectAll: () => set(state => unselectAll(state.queryTree)),
-    removeDogProp: (id: string) => set(state => removeDogProp(id, state.queryTree)),
-    removeQueryNode: (id: string) => set(state => removeQueryNode(id, state.queryTree)),
+    selectNode: async (id: string) => {
+        const newState = await selectNode(id, get().queryTree);
+        set(newState);
+    },
+    addDogProp: async (property: string, value: string) => {
+        const newState = await addDogProp(property, value, get().queryTree);
+        set(newState);
+    },
+    addNode: async (operator: Operator) => {
+        const newState = await addNode(operator, get().queryTree);
+        set(newState);
+    },
+    unselectAll: async () => {
+        const newState = unselectAll(get().queryTree);
+        set(newState);
+    },
+    removeDogProp: async (id: string) => {
+        const newState = await removeDogProp(id, get().queryTree);
+        set(newState);
+    },
+    removeQueryNode: async (id: string) => {
+        const newState = await removeQueryNode(id, get().queryTree);
+        set(newState);
+    },
 }));
 
 // Functions -------------------------------------------
 const findNode = (node: QueryTreeState, searchId: string): QueryTreeState | undefined => {
-    const { id, dogProps, queryNodes } = node;
-    if (id === searchId) {
+    if (node.id === searchId) {
         return node;
     }
-    dogProps.forEach((dogProp) => {
-        if (dogProp.id === searchId) {
-            return dogProp
-        }
-    });
-    let foundNode: QueryTreeState | undefined;
-    queryNodes.forEach((child) => {
-        foundNode = foundNode || findNode(child, searchId);
-    });
+    const foundNode = node.queryNodes.find(child => findNode(child, searchId));
     return foundNode;
-}
+};
 
 const unselectAll = (root: QueryTreeState) => {
     const newQueryTree = clone(root);
-    const traverseAndUnselect = (node: QueryTreeState) => {
-        const { dogProps, queryNodes } = node;
-        node.selected = false;
-        dogProps.forEach((dogProp) => {
-            dogProp.selected = false;
-        });
-        queryNodes.forEach((child) => {
-            traverseAndUnselect(child);
-        });
-    }
     traverseAndUnselect(newQueryTree);
-    return { queryTree: newQueryTree }
-}
+    return { queryTree: newQueryTree };
+};
 
-const selectNode = (id: string, root: QueryTreeState) => {
+const traverseAndUnselect = (node: QueryTreeState) => {
+    const { dogProps, queryNodes } = node;
+    node.selected = false;
+    dogProps.forEach((dogProp) => {
+        dogProp.selected = false;
+    });
+    queryNodes.forEach((child) => {
+        traverseAndUnselect(child);
+    });
+};
+
+const selectNode = async (id: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const node = findNode(newQueryTree, id);
     if (node) {
@@ -116,21 +126,23 @@ const selectNode = (id: string, root: QueryTreeState) => {
     return { queryTree: newQueryTree };
 }
 
-const findSelectedNode = (node: QueryTreeState): QueryTreeState | undefined => {
+const findSelectedNode = async (node: QueryTreeState): Promise<QueryTreeState | undefined> => {
     const { selected, queryNodes } = node;
     if (selected) {
         return node;
     }
-    let selectedNode: QueryTreeState | undefined;
-    queryNodes.forEach((child) => {
-        selectedNode = selectedNode || findSelectedNode(child);
-    });
-    return selectedNode;
-}
+    for (const child of queryNodes) {
+        const selectedChild = await findSelectedNode(child);
+        if (selectedChild) {
+            return selectedChild;
+        }
+    }
+    return undefined;
+};
 
-const addDogProp = (property: string, value: string, root: QueryTreeState) => {
+const addDogProp = async (property: string, value: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
-    const selectedNode = findSelectedNode(newQueryTree);
+    const selectedNode = await findSelectedNode(newQueryTree);
     if (selectedNode) {
         selectedNode.dogProps.push({
             id: uuid(),
@@ -141,12 +153,11 @@ const addDogProp = (property: string, value: string, root: QueryTreeState) => {
         selectedNode.selected = false;
     }
     return { queryTree: newQueryTree };
-
 }
 
-const addNode = (operator: Operator, root: QueryTreeState) => {
+const addNode = async (operator: Operator, root: QueryTreeState) => {
     const newQueryTree = clone(root);
-    const selectedNode = findSelectedNode(newQueryTree);
+    const selectedNode = await findSelectedNode(newQueryTree);
     if (selectedNode) {
         selectedNode.queryNodes.push({
             id: uuid(),
@@ -160,36 +171,25 @@ const addNode = (operator: Operator, root: QueryTreeState) => {
     return { queryTree: newQueryTree }
 }
 
-const removeDogProp = (removeID: string, root: QueryTreeState) => {
+const removeDogProp = async (removeID: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const traverseAndRemove = (node: QueryTreeState) => {
-        const { dogProps, queryNodes } = node;
-        const removedDogProp = dogProps.find(({ id }) => id === removeID);
-        if (removedDogProp) {
-            dogProps.splice(dogProps.indexOf(removedDogProp), 1);
-        }
-        queryNodes.forEach((child) => {
-            traverseAndRemove(child);
-        });
-    }
+        node.dogProps = node.dogProps.filter(({ id }) => id !== removeID);
+        node.queryNodes.forEach(traverseAndRemove);
+    };
     traverseAndRemove(newQueryTree);
-    return { queryTree: newQueryTree }
-}
-const removeQueryNode = (removeID: string, root: QueryTreeState) => {
+    return { queryTree: newQueryTree };
+};
+
+
+const removeQueryNode = async (removeID: string, root: QueryTreeState) => {
     const newQueryTree = clone(root);
     const traverseAndRemove = (node: QueryTreeState) => {
-        const { queryNodes } = node;
-        const removedNode = queryNodes.find(({ id }) => id === removeID);
-        if (removedNode) {
-            queryNodes.splice(queryNodes.indexOf(removedNode), 1);
-            return
-        }
-        queryNodes.forEach((child) => {
-            traverseAndRemove(child);
-        });
-    }
+        node.queryNodes = node.queryNodes.filter(({ id }) => id !== removeID);
+        node.queryNodes.forEach(traverseAndRemove);
+    };
     traverseAndRemove(newQueryTree);
-    return { queryTree: newQueryTree }
+    return { queryTree: newQueryTree };
 }
 
 // Debugging -------------------------------------------
