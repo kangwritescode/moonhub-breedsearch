@@ -96,13 +96,8 @@ const findNode = (node: QueryTreeState, searchId: string): QueryTreeState | unde
     if (node.id === searchId) {
         return node;
     }
-    for (const child of node.queryNodes) {
-        const foundNode = findNode(child, searchId);
-        if (foundNode) {
-            return foundNode;
-        }
-    }
-    return undefined;
+    const foundChild = node.queryNodes.find(child => findNode(child, searchId) !== undefined);
+    return foundChild ? findNode(foundChild, searchId) : undefined;
 };
 
 const unselectAll = (root: QueryTreeState) => {
